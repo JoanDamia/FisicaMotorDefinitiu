@@ -74,8 +74,8 @@ update_status Motor ::Update()
 	// ...
 
 // Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
-	ball.ax = ball.fx / ball.mass;
-	ball.ay = ball.fy / ball.mass;
+	/*ball.ax = ball.fx / ball.mass;
+	ball.ay = ball.fy / ball.mass;*/
 
 
 	
@@ -95,6 +95,7 @@ update_status Motor ::Update()
 	}
 
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
+//	App->renderer->DrawQuad(grounde.x, grounde.y, 20, 0, 255, 255);
 
 	return UPDATE_CONTINUE;
 }
@@ -108,3 +109,13 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, double dt)
 	ball->vy += ball->ay * dt;
 	return true;
 }
+
+//void Motor::newton_law(Ball* ball, float dt)
+//{
+//
+//	ball->ax = ball->fx / ball->mass;
+//	ball->ay = ball->fy / ball->mass;
+//	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
+//
+//
+//}

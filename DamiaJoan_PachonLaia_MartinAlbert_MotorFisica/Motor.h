@@ -69,6 +69,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, double dt);
+	//void newton_law(Ball* ball, float dt);
+
 public:
 	float dt =1/60;
 	
