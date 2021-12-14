@@ -9,7 +9,7 @@ Application::Application()
 	audio = new ModuleAudio(this, true);
 	player = new ModulePlayer(this);
 	scene_intro = new ModuleSceneIntro(this);
-	physics = new ModulePhysics(this);
+	motor = new Motor(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -17,7 +17,7 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-	AddModule(physics);
+	AddModule(motor);
 	AddModule(renderer);
 	AddModule(textures);
 	AddModule(input);

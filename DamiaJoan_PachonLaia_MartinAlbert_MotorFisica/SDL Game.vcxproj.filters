@@ -53,7 +53,7 @@
     <ClInclude Include="p2List.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="ModulePhysics.h">
+    <ClInclude Include="Motor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -88,7 +88,7 @@
     <ClCompile Include="ModuleSceneIntro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ModulePhysics.cpp">
+    <ClCompile Include="Motor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
