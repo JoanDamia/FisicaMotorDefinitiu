@@ -5,7 +5,6 @@
 #include "p2Point.h"
 
 
-
 class Ground {
 public:
 	double ground;
@@ -17,8 +16,8 @@ class Ball
 public:
 	// Position
 	// You could also use an array/vector
-	double x;
-	double y;
+	float x;
+	float y;
 
 	// Velocity
 	double vx;
@@ -52,7 +51,7 @@ public:
 	// Has physics enabled?
 	bool physics_enabled = true;
 
-
+	
 
 	
 };
@@ -60,13 +59,16 @@ public:
 class Motor : public Module
 {
 public:
+
+	Ball ball;
+	Ground grounde;
 	Motor(Application* app, bool start_enabled = true);
 	virtual ~Motor();
 
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	bool integrator_velocity_verlet();
+	bool integrator_velocity_verlet(Ball* ball, double dt);
 public:
 	float dt =1/60;
 	
