@@ -16,8 +16,8 @@ class Ball
 public:
 	// Position
 	// You could also use an array/vector
-	float x;
-	float y;
+	float x = 5.0;
+	float y = 5.0;
 
 	// Velocity
 	double vx;
@@ -61,7 +61,7 @@ class Motor : public Module
 public:
 
 	Ball ball;
-	Ground grounde;
+	Ground ground;
 	Motor(Application* app, bool start_enabled = true);
 	virtual ~Motor();
 
@@ -69,11 +69,11 @@ public:
 	update_status Update();
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, double dt);
-	//void newton_law(Ball* ball, float dt);
-
+	void newton_law(Ball* ball, float dt);
+	void ComputeForces(Ball* ball, float dt);
 public:
 	float dt =1/60;
-	
+	float g = -10.0f;
 
 	
 };

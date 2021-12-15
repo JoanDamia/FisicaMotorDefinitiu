@@ -22,13 +22,14 @@ bool Motor::Start()
 	ball.cd = 0.4;
 	ball.cl = 1.2;
 
-	// Set initial position and velocity of the ball
-	ball.x = ball.y = 100.0f;
-	ball.vx = 10.0;
+	// Set initial velocity of the ball
+
+	ball.vx = 5.0;
 	ball.vy = 5.0;
 	Ground grounde;
 
 	grounde.y = 9;
+	grounde.x = 9;
 	return true;
 }
 
@@ -85,7 +86,7 @@ update_status Motor ::Update()
 	 integrator_velocity_verlet(&ball, dt);
 
 	// Step #4: solve collisions
-	if (ball.y > grounde.y)
+	if (ball.y > ground.y)
 	{
 		// For now, just stop the ball when it reaches the ground.
 		ball.vx = ball.vy = 0.0;
@@ -95,7 +96,7 @@ update_status Motor ::Update()
 	}
 
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
-//	App->renderer->DrawQuad(grounde.x, grounde.y, 20, 0, 255, 255);
+	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
 
 	return UPDATE_CONTINUE;
 }
@@ -110,12 +111,26 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, double dt)
 	return true;
 }
 
-//void Motor::newton_law(Ball* ball, float dt)
-//{
-//
-//	ball->ax = ball->fx / ball->mass;
-//	ball->ay = ball->fy / ball->mass;
-//	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
-//
-//
-//}
+void Motor::newton_law(Ball* ball, float dt)
+{
+
+	ball->ax = ball->fx / ball->mass;
+	ball->ay = ball->fy / ball->mass;
+	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
+
+
+}
+
+void Motor::ComputeForces(Ball* ball, float dt)
+{
+
+	// Compute Gravity force
+	ball->fgx = ball->mass * 0.0;
+	ball->fgy = ball->mass * g; // Let's assume gravity is constant and downwards
+
+   // Add gravity force to the total accumulated force of the ball
+	ball->fx += ball->fgx;
+	ball->fy += ball->fgy;
+
+	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
+}
