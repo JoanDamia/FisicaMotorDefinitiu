@@ -84,7 +84,7 @@ update_status Motor ::Update()
 	// We will use the 2nd order "Velocity Verlet" method for integration.
 	// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
 	 integrator_velocity_verlet(&ball, dt);
-
+	 newton_law(&ball, dt);
 	// Step #4: solve collisions
 	if (ball.y > grounde.y)
 	{
@@ -94,7 +94,8 @@ update_status Motor ::Update()
 		ball.fx = ball.fy = 0.0;
 		ball.physics_enabled = false;
 	}
-	App->renderer->DrawQuad(grounde.x, grounde.y);
+	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
+	App->renderer->DrawQuad(a,20,0,255,255);
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
 	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
 
@@ -113,24 +114,26 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, double dt)
 
 void Motor::newton_law(Ball* ball, float dt)
 {
-
-	ball->ax = ball->fx / ball->mass;
-	ball->ay = ball->fy / ball->mass;
+	ball->ay = ball->vy / dt;
+	//ball->ax = ball->fx / ball->mass;
+	ball->fy = ball->ay * ball->mass;
 	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
 
 
 }
 
-void Motor::ComputeForces(Ball* ball, float dt)
-{
 
-	// Compute Gravity force
-	ball->fgx = ball->mass * 0.0;
-	ball->fgy = ball->mass * g; // Let's assume gravity is constant and downwards
 
-   // Add gravity force to the total accumulated force of the ball
-	ball->fx += ball->fgx;
-	ball->fy += ball->fgy;
-
-	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
-}
+//void Motor::ComputeForces(Ball* ball, float dt)
+//{
+//
+//	// Compute Gravity force
+//	ball->fgx = ball->mass * 0.0;
+//	ball->fgy = ball->mass * g; // Let's assume gravity is constant and downwards
+//
+//   // Add gravity force to the total accumulated force of the ball
+//	ball->fx += ball->fgx;
+//	ball->fy += ball->fgy;
+//
+//	LOG("VX= %d, VY= %d ", ball->vx, ball->vy);
+//}

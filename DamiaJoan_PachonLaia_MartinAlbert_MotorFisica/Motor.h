@@ -8,8 +8,8 @@
 class Ground {
 public:
 	double ground;
-	double x;
-	double y;
+	int x=0;
+	int y=500;
 };
 class Ball
 {
@@ -20,8 +20,8 @@ public:
 	float y = 5.0;
 
 	// Velocity
-	double vx;
-	double vy;
+	double vx=1;
+	double vy=1;
 
 	// Acceleration
 	double ax;
@@ -32,7 +32,7 @@ public:
 	double fy;
 
 	// Mass
-	double mass;
+	double mass=5;
 
 	// Aerodynamics stuff
 	double surface; // Effective wet surface
@@ -73,7 +73,7 @@ public:
 	void ComputeForces(Ball* ball, float dt);
 public:
 	float dt =1/60;
-	float g = -10.0f;
+	/*float g = -10.0f;*/
 
 	
 };
