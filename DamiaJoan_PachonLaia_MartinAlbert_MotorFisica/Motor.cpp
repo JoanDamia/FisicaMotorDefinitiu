@@ -86,7 +86,7 @@ update_status Motor ::Update()
 	 integrator_velocity_verlet(&ball, dt);
 
 	// Step #4: solve collisions
-	if (ball.y > ground.y)
+	if (ball.y > grounde.y)
 	{
 		// For now, just stop the ball when it reaches the ground.
 		ball.vx = ball.vy = 0.0;
@@ -94,7 +94,7 @@ update_status Motor ::Update()
 		ball.fx = ball.fy = 0.0;
 		ball.physics_enabled = false;
 	}
-
+	App->renderer->DrawQuad(grounde.x, grounde.y);
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
 	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
 

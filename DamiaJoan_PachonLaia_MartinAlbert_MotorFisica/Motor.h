@@ -61,7 +61,7 @@ class Motor : public Module
 public:
 
 	Ball ball;
-	Ground ground;
+	Ground grounde;
 	Motor(Application* app, bool start_enabled = true);
 	virtual ~Motor();
 

@@ -51,6 +51,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>C:\Users\Albertml1\Desktop\FisicaMotorDefinitiu\DamiaJoan_PachonLaia_MartinAlbert_MotorFisica\SDL\libx86;C:\Users\Albertml1\Desktop\FisicaMotorDefinitiu\DamiaJoan_PachonLaia_MartinAlbert_MotorFisica\SDL_image\libx86;C:\Users\Albertml1\Desktop\FisicaMotorDefinitiu\DamiaJoan_PachonLaia_MartinAlbert_MotorFisica\SDL_mixer\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
