@@ -75,22 +75,21 @@ update_status Motor ::Update()
 	//ball->ay = ball->vy / dt;
 	ball.ax = ball.fx / ball.mass;
 	ball.ay = ball.fy / ball.mass;
-	LOG("VX= %d, VY= %d ", ball.vx, ball.vy);
 	
 	// Step #3: Integrate --> from accel to new velocity & new position. 
 	// We will use the 2nd order "Velocity Verlet" method for integration.
 	// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
-	 integrator_velocity_verlet(ball, dt);
+	 integrator_velocity_verlet(&ball, dt);
 	// newton_law(dt);
 	// Step #4: solve collisions
-	if (ball.y >= grounde.y)
-	{
-		// For now, just stop the ball when it reaches the ground.
-		ball.vx = ball.vy = 0.0;
-		ball.ax = ball.ay = 0.0;
-		ball.fx = ball.fy = 0.0;
-		ball.physics_enabled = false;
-	}
+	//if (ball.y >= grounde.y)
+	//{
+	//	// For now, just stop the ball when it reaches the ground.
+	//	ball.vx = ball.vy = 0.0;
+	//	ball.ax = ball.ay = 0.0;
+	//	ball.fx = ball.fy = 0.0;
+	//	ball.physics_enabled = false;
+	//}
 	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
 	App->renderer->DrawQuad(a,0,255,255);
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
@@ -100,12 +99,14 @@ update_status Motor ::Update()
 }
 // Integration scheme: Velocity Verlet
 // You should modularise all your algorithms into subroutines. Including the ones to compute forces.
-bool  Motor::integrator_velocity_verlet(Ball &ball, double dt)
+bool  Motor::integrator_velocity_verlet(Ball* ball, double dt)
 {
-	ball.x += ball.vx * dt + 0.5 * ball.ax * dt * dt;
-	ball.y += ball.vy * dt + 0.5 * ball.ay * dt * dt;
-	ball.vx += ball.ax * dt;
-	ball.vy += ball.ay * dt;
+	LOG("HASTA LOS HUEVOS ");
+
+	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+	ball->vx += ball->ax * dt;
+	ball->vy += ball->ay * dt;
 	return true;
 }
 
