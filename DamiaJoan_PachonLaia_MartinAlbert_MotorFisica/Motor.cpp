@@ -1,7 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "Motor.h"
-
+#include "math.h"
 
 Motor::Motor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -49,7 +49,7 @@ update_status Motor ::Update()
 	ball.ax = ball.ay = 0.0;
 
 	// Step #1: Compute forces
-
+	drag_function(&ball, dt);
 		// Compute Gravity force
 	ball.fgx = ball.mass * 0.0;
 	ball.fgy = ball.mass * g; // Let's assume gravity is constant and downwards
@@ -57,7 +57,7 @@ update_status Motor ::Update()
 	// Add gravity force to the total accumulated force of the ball
 	ball.fx += ball.fgx;
 	ball.fy += ball.fgy;
-
+	ball.fy -= ball.fdy;
 	// Compute Aerodynamic Lift & Drag forces
 
 
@@ -101,14 +101,19 @@ update_status Motor ::Update()
 	App->renderer->DrawQuad(a,0,255,255);
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
 	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
-
+	
+	
 	
 	integrator_velocity_verlet(&ball, dt);
+
+	
 
 	return UPDATE_CONTINUE;
 }
 // Integration scheme: Velocity Verlet
 // You should modularise all your algorithms into subroutines. Including the ones to compute forces.
+
+
 bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 {
 	LOG("HASTA LOS HUEVOS ");
@@ -122,6 +127,20 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 	
 	return true;
 }
+
+
+bool  Motor::drag_function(Ball* ball, float dt)
+{
+	float density = 10'15;
+	float s = 2;
+	float cd = 10'1;
+	ball->x = sqrt((1 / 2) * density * (ball->vx * ball->vx) * s * cd);
+	ball->fdy = (1 / 2) * density * (ball->vx * ball->vx) * s * cd;
+	//ball->y= (sqrt(ball->fdy *2/ density * s * cd))/dt -10;
+
+	return true;
+}
+
 
 //void Motor::newton_law( float dt)
 //{

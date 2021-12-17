@@ -69,6 +69,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, float dt);
+	bool drag_function(Ball* ball, float dt);
 	//void newton_law(Ball* ball, float dt);
 	void ComputeForces(Ball* ball, float dt);
 public:
