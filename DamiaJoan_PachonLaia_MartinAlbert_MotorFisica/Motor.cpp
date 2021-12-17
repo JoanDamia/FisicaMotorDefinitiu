@@ -103,6 +103,7 @@ update_status Motor::Update()
 		//	ball.physics_enabled = false;
 		//}
 		integrator_velocity_verlet(&ball, dt);
+		impulsive_function(&ball, dt);
 
 		
 	}
@@ -151,13 +152,13 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 
 bool  Motor::drag_function(Ball* ball, float dt)
 {
-	float density = 10'15;
-	float s = 2;
-	float cd = 10'1;
-	ball->x = sqrt((1 / 2) * density * (ball->vx * ball->vx) * s * cd);
-	ball->fdy = (1 / 2) * density * (ball->vx * ball->vx) * s * cd;
-	//ball->y= (sqrt(ball->fdy *2/ density * s * cd))/dt -10;
+	float cd = 0'05;
+	/*ball->x = sqrt(0'5* density * (ball->vx * ball->vx) * s * cd);
+	ball->fdx = 0'5* density * (ball->vx * ball->vx) * s * cd;*/
 
+	ball->vy += sqrt((2 * ball->fdy) / cd);
+	//ball->fdy = 0'5* density * (ball->vy * ball->vy) * s * cd;
+	//ball->y = (sqrt(ball->fdy *2/ density * s * cd))/dt;
 	return true;
 }
 
