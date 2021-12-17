@@ -68,11 +68,11 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-	bool integrator_velocity_verlet(Ball* ball, double dt);
+	bool integrator_velocity_verlet(Ball* ball, float dt);
 	//void newton_law(Ball* ball, float dt);
 	void ComputeForces(Ball* ball, float dt);
 public:
-	float dt =1/16;
+	float dt =0.016;
 	float g = 10.0f;
 
 	

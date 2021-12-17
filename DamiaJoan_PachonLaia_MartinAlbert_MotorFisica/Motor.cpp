@@ -14,19 +14,19 @@ Motor::~Motor()
 bool Motor::Start()
 {
 	LOG("Loading player");
-	Ball ball;
+	
 
 	// Set physics properties of the ball
-	ball.mass = 10; // kg
+	ball.mass = 5; // kg
 	//ball.surface = 2; // m^2
 	//ball.cd = 0.4;
 	//ball.cl = 1.2;
 
 	// Set initial velocity of the ball
 
-	ball.vx = 5.0;
-	ball.vy = 5.0;
-	Ground grounde;
+	/*ball.vx = 5.0;
+	ball.vy = 5.0;*/
+	
 
 	
 	return true;
@@ -60,6 +60,13 @@ update_status Motor ::Update()
 
 	// Compute Aerodynamic Lift & Drag forces
 
+
+
+	/*ball.y += ball.fgy;
+	ball.x += 1;*/
+
+
+
 	//ball. speed = ball.speed(ball.vx - atmosphere.windx, ball.vy - atmosphere.windy);
 	//ball. fdrag = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cd;
 	//ball. flift = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cl;
@@ -79,7 +86,7 @@ update_status Motor ::Update()
 	// Step #3: Integrate --> from accel to new velocity & new position. 
 	// We will use the 2nd order "Velocity Verlet" method for integration.
 	// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
-	 integrator_velocity_verlet(&ball, dt);
+	 
 	// newton_law(dt);
 	// Step #4: solve collisions
 	//if (ball.y >= grounde.y)
@@ -95,18 +102,24 @@ update_status Motor ::Update()
 	App->renderer->DrawCircle(ball.x, ball.y, 20, 0, 255, 255);
 	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
 
+	
+	integrator_velocity_verlet(&ball, dt);
+
 	return UPDATE_CONTINUE;
 }
 // Integration scheme: Velocity Verlet
 // You should modularise all your algorithms into subroutines. Including the ones to compute forces.
-bool  Motor::integrator_velocity_verlet(Ball* ball, double dt)
+bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 {
 	LOG("HASTA LOS HUEVOS ");
-
-	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
-	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
 	ball->vx += ball->ax * dt;
-	ball->vy += ball->ay * dt;
+	//ball->vy += ball->ay * dt;
+	ball->vy += ball->fy * dt;
+	//ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+	//ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+	
+	
 	return true;
 }
 
