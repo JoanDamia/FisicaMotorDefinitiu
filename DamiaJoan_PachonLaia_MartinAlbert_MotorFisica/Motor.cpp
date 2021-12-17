@@ -48,14 +48,14 @@ update_status Motor::Update()
 
 
 	if (enabled == true) {
-		App->renderer->DrawCircle(ball.x + 500, ball.y, 20, 0, 255, 255);
+		App->renderer->DrawCircle(ball.x + 50, ball.y +500, 20, 0, 255, 255);
 
 		// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
 		ball.fx = ball.fy = 0.0;
 		ball.ax = ball.ay = 0.0;
 
 		// Step #1: Compute forces
-		drag_function(&ball, dt);
+		
 		// Compute Gravity force
 		ball.fgx = ball.mass * 0.0;
 		ball.fgy = ball.mass * g; // Let's assume gravity is constant and downwards
@@ -103,7 +103,7 @@ update_status Motor::Update()
 		//	ball.physics_enabled = false;
 		//}
 		integrator_velocity_verlet(&ball, dt);
-		impulsive_function(&ball, dt);
+		drag_function(&ball, dt);
 
 		
 	}
@@ -111,7 +111,7 @@ update_status Motor::Update()
 		
 		
 		enabled = true;
-		
+		impulsive_function(&ball, dt);
 	}
 
 
@@ -164,7 +164,14 @@ bool  Motor::drag_function(Ball* ball, float dt)
 
 bool Motor::impulsive_function(Ball* ball, float dt) {
 
+	/*ball->fy += 100;
+	ball->fx += 50;*/
 
+	ball->vy += ball->fy * dt;
+	ball->vx += ball->fx * dt;
+
+	ball->y -= ball->vy * dt;
+	ball->x += ball->vx * dt;
 
 	return true;
 }
