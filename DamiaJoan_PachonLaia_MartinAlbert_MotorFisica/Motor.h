@@ -16,8 +16,8 @@ class Ball
 public:
 	// Position
 	// You could also use an array/vector
-	float x = 5.0;
-	float y = 5.0;
+	float x = 10.0;
+	float y = 10.0;
 
 	// Velocity
 	double vx=1;
@@ -70,6 +70,8 @@ public:
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
+	bool impulsive_function(Ball* ball, float dt);
+	bool elastic_function(Ball* ball, float dt);
 	//void newton_law(Ball* ball, float dt);
 	void ComputeForces(Ball* ball, float dt);
 public:

@@ -141,6 +141,15 @@ bool  Motor::drag_function(Ball* ball, float dt)
 	return true;
 }
 
+bool Motor::impulsive_function(Ball* ball, float dt) {
+
+	return true;
+}
+
+bool Motor::elastic_function(Ball* ball, float dt) {
+
+	return true;
+}
 
 //void Motor::newton_law( float dt)
 //{
