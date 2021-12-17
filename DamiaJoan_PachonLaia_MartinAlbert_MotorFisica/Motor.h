@@ -16,8 +16,8 @@ class Ball
 public:
 	// Position
 	// You could also use an array/vector
-	float x = 10.0;
-	float y = 10.0;
+	float x = 5.0;
+	float y = 5.0;
 
 	// Velocity
 	double vx=1;
@@ -67,6 +67,7 @@ public:
 
 	bool Start();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
@@ -77,6 +78,6 @@ public:
 public:
 	float dt =0.016;
 	float g = 10.0f;
-
+	bool enabled = false;
 	
 };
