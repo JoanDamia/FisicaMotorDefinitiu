@@ -78,8 +78,8 @@ if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
 
 				// Add gravity force to the total accumulated force of the ball
 				c->data->fx += c->data->fgx;
-				c->data->fy += c->data->fgy;
-				c->data->fy -= c->data->fdy;
+				c->data->fy += c->data->fgy - c->data->fiy - c->data->fdy;
+				
 				// Compute Aerodynamic Lift & Drag forces
 
 
@@ -156,11 +156,12 @@ update_status Motor::PostUpdate() {
 bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 {
 	LOG("HASTA LOS HUEVOS ");
+	ball->ax += ball->fx / ball->mass;
 	ball->vx += ball->ax * dt;
-	//ball->vy += ball->ay * dt;
-	ball->vy += ball->fy * dt;
-	//ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
-	//ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
+	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+
+	ball->ay += ball->fy / ball->mass;
+	ball->vy += ball->ay * dt;
 	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
 	
 	
@@ -170,26 +171,18 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 
 bool  Motor::drag_function(Ball* ball, float dt)
 {
-	float cd = 0'05;
-	/*ball->x = sqrt(0'5* density * (ball->vx * ball->vx) * s * cd);
-	ball->fdx = 0'5* density * (ball->vx * ball->vx) * s * cd;*/
+	float cd = 0.12;
 
-	ball->vy += sqrt((2 * ball->fdy) / cd);
-	//ball->fdy = 0'5* density * (ball->vy * ball->vy) * s * cd;
-	//ball->y = (sqrt(ball->fdy *2/ density * s * cd))/dt;
+	ball->fdx = 0.5 * (0.3 * 0.3) * cd;
+	ball->fdy = 0.5 * (0.3 * 0.3) * cd;
+
 	return true;
 }
 
 bool Motor::impulsive_function(Ball* ball, float dt) {
 
-	/*ball->fy += 100;
-	ball->fx += 50;*/
-
-	ball->vy += ball->fy * dt;
-	ball->vx += ball->fx * dt;
-
-	ball->y -= ball->vy * dt;
-	ball->x += ball->vx * dt;
+	ball->fy += 1530;
+	ball->fx += 500;
 
 	return true;
 }

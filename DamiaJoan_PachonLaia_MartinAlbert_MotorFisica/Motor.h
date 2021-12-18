@@ -34,7 +34,7 @@ public:
 	double fy;
 
 	// Mass
-	double mass=0;
+	double mass= 100;
 
 	// Aerodynamics stuff
 	double surface; // Effective wet surface
@@ -49,7 +49,9 @@ public:
 	double flift;
 	double fdx; // Let's assume Drag is aligned with x-axis (in your game, generalize this)
 	double fdy; // Let's assume Lift is perpendicular with x-axis (in your game, generalize this)
-	
+	double fiy;
+	double fix;
+
 	// Has physics enabled?
 	bool physics_enabled = true;
 
@@ -107,7 +109,7 @@ public:
 	void ComputeForces(Ball* ball, float dt);
 public:
 	float dt =0.016;
-	float g = 10.0f;
+	float g = 200.0f;
 	bool enabled = true;
 	
 };
