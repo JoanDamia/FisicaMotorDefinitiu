@@ -13,15 +13,17 @@ public:
 };
 class Ball
 {
+
 public:
+	
 	// Position
 	// You could also use an array/vector
-	float x = 5.0;
-	float y = 5.0;
+	float x = 0.0;
+	float y = 0.0;
 
 	// Velocity
-	double vx=1;
-	double vy=1;
+	double vx=0;
+	double vy=0;
 
 	// Acceleration
 	double ax;
@@ -32,7 +34,7 @@ public:
 	double fy;
 
 	// Mass
-	double mass=5;
+	double mass=0;
 
 	// Aerodynamics stuff
 	double surface; // Effective wet surface
@@ -51,15 +53,42 @@ public:
 	// Has physics enabled?
 	bool physics_enabled = true;
 
-	
+	Ball() {
+		this->mass = 0;
+		this->x = 0;
+		this->y = 0;
+		this->vx = 0;
+		this->vy = 0;
+		this->fy = 0;
+		this->fx = 0;
+		this->ax = 0;
+		this->ay = 0;
+		this->fgx = 0;
+		this->fgy = 0;
+	}
 
-	
+	Ball(double mass, float x, float y, double vx, double vy,double fy, double fx, double ax, double ay, double fgx, double fgy) {
+		this->mass = mass;
+		this->x = x;
+		this->y = y;
+		this->vx = vx;
+		this->vy = vy;
+		this->fy = fy;
+		this->fx = fx;
+		this->ax = ax;
+		this->ay = ay;
+		this->fgx = fgx;
+		this->fgy = fgy;
+	}
+	 ~Ball() {
+
+	}
 };
 
 class Motor : public Module
 {
 public:
-
+	p2List<Ball*>pelotas;
 	Ball ball;
 	Ground grounde;
 	Motor(Application* app, bool start_enabled = true);
@@ -68,6 +97,7 @@ public:
 	bool Start();
 	update_status Update();
 	update_status PostUpdate();
+	Ball* AddBall(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy);
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
@@ -78,6 +108,6 @@ public:
 public:
 	float dt =0.016;
 	float g = 10.0f;
-	bool enabled = false;
+	bool enabled = true;
 	
 };
