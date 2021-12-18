@@ -104,7 +104,7 @@ public:
 	bool integrator_velocity_verlet(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
 	bool impulsive_function(Ball* ball, float dt);
-	bool elastic_function(Ball* ball, float dt);
+	bool elastic_function(Ball* ball, float dt, Ground* anchor, float b);
 	//void newton_law(Ball* ball, float dt);
 	void ComputeForces(Ball* ball, float dt);
 public:

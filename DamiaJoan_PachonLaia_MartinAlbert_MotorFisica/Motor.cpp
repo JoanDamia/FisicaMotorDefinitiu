@@ -183,8 +183,20 @@ bool Motor::impulsive_function(Ball* ball, float dt) {
 	return true;
 }
 
-bool Motor::elastic_function(Ball* ball, float dt) {
+bool Motor::elastic_function(Ball* ball, float dt, Ground* anchor, float b) {
 
+	float k = 5.0;
+	float Fk;
+	float Dx;
+	float Dvx;
+
+	Dx = ball->x -= anchor->x;
+
+	Dvx = (ball->vx += ball->vy) + (ball->vx += ball->vy) * (anchor->ground - (anchor->x += anchor->y));
+
+	Fk = -k * Dx - (b * Dvx);
+
+	//Fk = -k * DeltaX - b * deltaV
 
 
 	return true;
