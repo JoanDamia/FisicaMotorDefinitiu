@@ -45,25 +45,12 @@ Ball* Motor::AddBall(double mass, float x, float y, double vx, double vy, double
 update_status Motor::Update()
 {
 	
-	
-if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
-	AddBall(5, 5, 5, 1, 1, 0, 0, 0, 0, 0, 0);
-		enabled = true;
-		
-		
-	
-		
-
-}
-
-	if (pelotas.getFirst() != NULL) {
-		
 		p2List_item<Ball*>* c = pelotas.getFirst();
 		
 
 		while (c != NULL) {
 			
-			if (enabled == true) {
+			if (c->data->physics_enabled == true) {
 				App->renderer->DrawCircle(c->data->x + 50, c->data->y, 20, 0, 255, 255);
 
 				// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
@@ -123,15 +110,23 @@ if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
 				impulsive_function(c->data, dt);
 				
 			}
-			if (c != NULL) {
-				c = c->next;
-			}
+			
+				
+			c = c->next;
 		}
-	}
+		
+	
+		if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
+			AddBall(5, 5, 5, 1, 1, 0, 0, 0, 0, 0, 0);
+			ball.physics_enabled = true;
 
+
+
+
+
+		}
 	
 	
-
 	
 
 	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
@@ -150,6 +145,7 @@ if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
 update_status Motor::PostUpdate() {
 	
 
+	
 
 	return UPDATE_CONTINUE;
 }
