@@ -100,6 +100,7 @@ public:
 class Motor : public Module
 {
 public:
+		p2List<Ground*>anclaje;
 	p2List<Ball*>pelotas;
 	Ball ball;
 	Ground grounde;
@@ -122,6 +123,8 @@ public:
 public:
 	float dt =0.016;
 	float g = 200.0f;
+	//little drag coeficient
+	float b = 0.5;
 	bool enabled = true;
 	bool verlet = true;
 	bool euler = false;

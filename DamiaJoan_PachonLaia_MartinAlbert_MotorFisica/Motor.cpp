@@ -145,7 +145,7 @@ update_status Motor::Update()
 	{
 		AddBall(1.0f, 5.0f, 10.0f, 15.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
-
+	p2List_item<Ground*>* gr = anclaje.getFirst();
 	// Process all balls
 	p2List_item<Ball*>* c = pelotas.getFirst();
 	while (c != NULL)
@@ -248,6 +248,7 @@ update_status Motor::Update()
 				}
 			}
 
+
 			// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 			c->data->ax = c->data->fx / c->data->mass;
 			c->data->ay = c->data->fy / c->data->mass;
@@ -285,8 +286,13 @@ update_status Motor::Update()
 
 		// Next ball
 		c = c->next;
-	}
 
+	}
+	//elastic force (springs)
+	while (gr != NULL) {
+		elastic_function(c->data, dt, gr->data, b);
+		gr = gr->next;
+	}
 
 	music = false;
 
