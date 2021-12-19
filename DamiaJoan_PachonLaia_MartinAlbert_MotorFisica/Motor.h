@@ -99,7 +99,6 @@ class Motor : public Module
 {
 public:
 	p2List<Ball*>pelotas;
-	p2List<Ground*>anclaje;
 	Ball ball;
 	Ground grounde;
 	Motor(Application* app, bool start_enabled = true);
@@ -120,7 +119,6 @@ public:
 public:
 	float dt =0.016;
 	float g = 200.0f;
-	float b;
 	bool enabled = true;
 	bool verlet = true;
 	bool euler = false;
