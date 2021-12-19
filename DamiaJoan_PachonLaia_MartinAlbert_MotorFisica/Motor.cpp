@@ -15,10 +15,10 @@ Motor::~Motor()
 bool Motor::Start()
 {
 	LOG("Loading player");
-	
+
 
 	// Set physics properties of the ball
-	
+
 	//ball.surface = 2; // m^2
 	//ball.cd = 0.4;
 	//ball.cl = 1.2;
@@ -27,135 +27,124 @@ bool Motor::Start()
 
 	/*ball.vx = 5.0;
 	ball.vy = 5.0;*/
-	
 
-	
+
+
 	return true;
 }
 
 
-Ball* Motor::AddBall(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy) {
+Ball* Motor::AddBall(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy)
+{
+	// Create new ball
 	Ball* thisball = new Ball(mass, x, y, vx, vy, fy, fx, ax, ay, fgx, fgy);
 
+	// Add it to the list
 	pelotas.add(thisball);
-	
+
+	// Return ball (why?)
 	return thisball;
 }
 
-
-
-// Update: draw background
+// Update: compute physics
 update_status Motor::Update()
 {
-	
-		p2List_item<Ball*>* c = pelotas.getFirst();
-		
+	// Add new ball if user presses 1
+	if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
+	{
+		AddBall(1.0f, 5.0f, 10.0f, 15.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	}
 
-		while (c != NULL) {
-			
-			if (c->data->physics_enabled == true) {
-				App->renderer->DrawCircle(c->data->x + 50, c->data->y, 20, 0, 255, 255);
+	// Process all balls
+	p2List_item<Ball*>* c = pelotas.getFirst();
+	while (c != NULL)
+	{
+		// Process this ball only if physics enabled
+		if (c->data->physics_enabled == true)
+		{
+			// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
+			c->data->fx = c->data->fy = 0.0;
+			c->data->ax = c->data->ay = 0.0;
 
-				// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
-				c->data->fx = c->data->fy = 0.0;
-				c->data->ax = c->data->ay = 0.0;
+			// Step #1: Compute forces
 
-				// Step #1: Compute forces
+			// Compute Gravity force
+			c->data->fgx = c->data->mass * 0.0;
+			c->data->fgy = c->data->mass * g; // Let's assume gravity is constant and downwards
 
-				// Compute Gravity force
-				c->data->fgx = c->data->mass * 0.0;
-				c->data->fgy = c->data->mass * g; // Let's assume gravity is constant and downwards
+			// Add gravity force to the total accumulated force of the ball
+			c->data->fx += c->data->fgx;
+			c->data->fy += c->data->fgy;
+			//c->data->fy += c->data->fgy - c->data->fiy - c->data->fdy;
 
-				// Add gravity force to the total accumulated force of the ball
-				c->data->fx += c->data->fgx;
-				c->data->fy += c->data->fgy - c->data->fiy - c->data->fdy;
-				
-				// Compute Aerodynamic Lift & Drag forces
+			// Compute Aerodynamic Lift & Drag forces
+			drag_function(c->data, dt);
 
-				//ball. speed = ball.speed(ball.vx - atmosphere.windx, ball.vy - atmosphere.windy);
-				//ball. fdrag = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cd;
-				//ball. flift = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cl;
-				//ball. fdx = -fdrag; // Let's assume Drag is aligned with x-axis (in your game, generalize this)
-				//ball. fdy = flift; // Let's assume Lift is perpendicular with x-axis (in your game, generalize this)
+			// Add impulsive force
+			//impulsive_function(c->data, dt);
 
 			// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
-				/*ball.ax = ball.fx / ball.mass;
-				ball.ay = ball.fy / ball.mass;*/
+			c->data->ax = c->data->fx / c->data->mass;
+			c->data->ay = c->data->fy / c->data->mass;
 
-				//ball->ay = ball->vy / dt;
-				c->data->ax = c->data->fx / c->data->mass;
-				c->data->ay = c->data->fy / c->data->mass;
+			// Step #3: Integrate --> from accel to new velocity & new position. 
+			// We will use the 2nd order "Velocity Verlet" method for integration.
+			integrator_velocity_verlet(c->data, dt);
 
-				// Step #3: Integrate --> from accel to new velocity & new position. 
-				// We will use the 2nd order "Velocity Verlet" method for integration.
-				// You can also move this code into a subroutine: integrator_velocity_verlet(ball, dt);
+			// Step #4: solve collisions
 
-				// newton_law(dt);
-				// Step #4: solve collisions
-				//if (ball.y >= grounde.y)
-				//{
-				//	// For now, just stop the ball when it reaches the ground.
-				//	ball.vx = ball.vy = 0.0;
-				//	ball.ax = ball.ay = 0.0;
-				//	ball.fx = ball.fy = 0.0;
-				//	ball.physics_enabled = false;
-				//}
-				integrator_velocity_verlet(c->data, dt);
-				drag_function(c->data, dt);
-				impulsive_function(c->data, dt);
-				
+			// Bounce with the ground
+			if ((c->data->y + 20) > grounde.y)
+			{
+				// Solve clipping: teleport ball to ground surface
+				// TODO: you can do something else instead of a simple TP
+				c->data->y = grounde.y - 20;
+
+				// Ellastic collision with the ground
+				c->data->vy = -c->data->vy; // Reverse vertical velocity
+
+				// Apply friction & restitution
+				c->data->vx *= 0.9; // Friction
+				c->data->vy *= 0.8; // Restitution
 			}
-			
-				
-			c = c->next;
 		}
-		
-	
-		if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_REPEAT)) {
-			AddBall(5, 5, 5, 1, 1, 0, 0, 0, 0, 0, 0);
-			ball.physics_enabled = true;
 
+		// Next ball
+		c = c->next;
+	}
 
+	// Continue playing
+	return UPDATE_CONTINUE;
+}
 
+update_status Motor::PostUpdate()
+{
+	// Draw all balls in the list
+	p2List_item<Ball*>* c = pelotas.getFirst();
+	while (c != NULL)
+	{
+		App->renderer->DrawCircle(c->data->x + 50, c->data->y, 20, 0, 255, 255);
+		c = c->next;
+	}
 
-
-		}
-	
-	
-	
-
+	// Draw ground
 	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
 	App->renderer->DrawQuad(a, 0, 255, 255);
-	//App->renderer->DrawLine(ground.x, ground.y, 20, 0, 255, 255);
-	
-	
-	
-	
-	
+
 	return UPDATE_CONTINUE;
 }
+
+
 // Integration scheme: Velocity Verlet
-// You should modularise all your algorithms into subroutines. Including the ones to compute forces.
-
-update_status Motor::PostUpdate() {
-	
-
-	
-
-	return UPDATE_CONTINUE;
-}
 bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 {
-	LOG("HASTA LOS HUEVOS ");
-	ball->ax += ball->fx / ball->mass;
-	ball->vx += ball->ax * dt;
 	ball->x += ball->vx * dt + 0.5 * ball->ax * dt * dt;
+	ball->vx += ball->ax * dt;
 
-	ball->ay += ball->fy / ball->mass;
-	ball->vy += ball->ay * dt;
 	ball->y += ball->vy * dt + 0.5 * ball->ay * dt * dt;
-	
-	
+	ball->vy += ball->ay * dt;
+
+
 	return true;
 }
 
@@ -170,28 +159,18 @@ bool  Motor::drag_function(Ball* ball, float dt)
 	return true;
 }
 
-bool Motor::impulsive_function(Ball* ball, float dt) {
-
-	ball->fy += 1530;
+bool Motor::impulsive_function(Ball* ball, float dt)
+{
+	ball->fy += 1530; // TOO HIGH!
 	ball->fx += 500;
 
 	return true;
 }
 
-bool Motor::elastic_function(Ball* ball, float dt, Ground* anchor, float b) {
-
-
-
+bool Motor::elastic_function(Ball* ball, float dt, Ground* anchor, float b)
+{
 	return true;
 }
-
-//void Motor::newton_law( float dt)
-//{
-//	
-//
-//
-//}
-//
 
 
 // Unload assets
