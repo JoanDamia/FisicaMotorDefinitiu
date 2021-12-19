@@ -81,7 +81,10 @@ update_status Motor::Update()
 			drag_function(c->data, dt);
 
 			// Add impulsive force
-			//impulsive_function(c->data, dt);
+			if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
+			{
+				impulsive_function(c->data, dt);
+			}
 
 			// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 			c->data->ax = c->data->fx / c->data->mass;
@@ -153,16 +156,16 @@ bool  Motor::drag_function(Ball* ball, float dt)
 {
 	float cd = 0.12;
 
-	ball->fdx = 0.5 * (0.3 * 0.3) * cd;
-	ball->fdy = 0.5 * (0.3 * 0.3) * cd;
+	ball->fdx = 0.5 * (ball->vx * 0.3) * cd;
+	ball->fdy = 0.5 * (ball->vy * 0.3) * cd;
 
 	return true;
 }
 
 bool Motor::impulsive_function(Ball* ball, float dt)
 {
-	ball->fy += 1530; // TOO HIGH!
-	ball->fx += 500;
+	ball->fy -= 12000;
+	ball->fx += 12000;
 
 	return true;
 }

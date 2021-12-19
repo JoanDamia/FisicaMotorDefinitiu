@@ -67,9 +67,13 @@ public:
 		this->ay = 0;
 		this->fgx = 0;
 		this->fgy = 0;
+		this->fdx = 0;
+		this->fdy = 0;
+		this->fiy = 0;
+		this->fix = 0;
 	}
 
-	Ball(double mass, float x, float y, double vx, double vy,double fy, double fx, double ax, double ay, double fgx, double fgy) {
+	Ball(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy) {
 		this->mass = mass;
 		this->x = x;
 		this->y = y;
@@ -81,6 +85,10 @@ public:
 		this->ay = ay;
 		this->fgx = fgx;
 		this->fgy = fgy;
+		this->fdx = fdx;
+		this->fdy = fdy;
+		this->fiy = fiy;
+		this->fix = fix;
 	}
 	 ~Ball() {
 
