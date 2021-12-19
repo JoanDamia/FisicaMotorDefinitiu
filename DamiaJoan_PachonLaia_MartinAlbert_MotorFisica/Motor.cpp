@@ -41,6 +41,9 @@ Ball* Motor::AddBall(double mass, float x, float y, double vx, double vy, double
 	
 	return thisball;
 }
+
+
+
 // Update: draw background
 update_status Motor::Update()
 {
@@ -69,19 +72,11 @@ update_status Motor::Update()
 				
 				// Compute Aerodynamic Lift & Drag forces
 
-
-
-
-
-
-
 				//ball. speed = ball.speed(ball.vx - atmosphere.windx, ball.vy - atmosphere.windy);
 				//ball. fdrag = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cd;
 				//ball. flift = 0.5 * atmosphere.density * speed * speed * ball.surface * ball.cl;
 				//ball. fdx = -fdrag; // Let's assume Drag is aligned with x-axis (in your game, generalize this)
 				//ball. fdy = flift; // Let's assume Lift is perpendicular with x-axis (in your game, generalize this)
-
-
 
 			// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
 				/*ball.ax = ball.fx / ball.mass;
@@ -185,18 +180,6 @@ bool Motor::impulsive_function(Ball* ball, float dt) {
 
 bool Motor::elastic_function(Ball* ball, float dt, Ground* anchor, float b) {
 
-	float k = 5.0;
-	float Fk;
-	float Dx;
-	float Dvx;
-
-	Dx = ball->x -= anchor->x;
-
-	Dvx = (ball->vx += ball->vy) + (ball->vx += ball->vy) * (anchor->ground - (anchor->x += anchor->y));
-
-	Fk = -k * Dx - (b * Dvx);
-
-	//Fk = -k * DeltaX - b * deltaV
 
 
 	return true;
