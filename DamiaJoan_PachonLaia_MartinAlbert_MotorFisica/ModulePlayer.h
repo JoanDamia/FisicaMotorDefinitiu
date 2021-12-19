@@ -27,8 +27,9 @@ public:
 	bool CleanUp();
 
 public:
-
+	SDL_Texture* CanonKun;
 	int rotacion = 0;
-
+	int x = 0;
+	int y = 450;
 	
 };
