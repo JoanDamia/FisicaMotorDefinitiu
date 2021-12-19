@@ -24,9 +24,9 @@ bool ModulePlayer::Start()
 	Win = App->textures->Load("Assets/sprites/win.png");
 	LOG("Loading player");
 
-	player =App->motor->AddCollider({ xplayer, yplayer, 115, 171 }, Collider::Type::PLAYER, this);
+	player =App->motor->AddCollider({ xplayer, yplayer, 30, 30 }, Collider::Type::PLAYER, this);
 	ground = App->motor->AddCollider({ 0, 480,1200, 10 }, Collider::Type::GROUND, this);
-	limite = App->motor->AddCollider({ Limx, Limy, 24, 80 }, Collider::Type::LIMITE, this);
+	limite = App->motor->AddCollider({ Limx, Limy, 2, 80 }, Collider::Type::LIMITE, this);
 	bola = App->motor->AddCollider({ App->motor->ball.x, App->motor->ball.y, 24, 24 }, Collider::Type::BOLA, this);
 	
 
@@ -44,22 +44,22 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
-	player->SetPos(xplayer, yplayer );
+	player->SetPos(xplayer+30, yplayer+30 );
 	ground->SetPos(0,500);
 	limite->SetPos(Limx, Limy);
 	bola->SetPos(App->motor->ball.x, App->motor->ball.y);
 	
 	if (App->motor->ball.x == xplayer  ) {
-		vidas--;
+		vidas -= 1;
 	}
 	if (vidas <= 0) {
 		dead = true;
 	}
 	if (dead == true) {
-		App->renderer->Blit(Lose, xplayer-100, yplayer-100, NULL, 1.0f, 0);
+		App->renderer->Blit(Lose, xplayer - 500, yplayer - 400, NULL, 1.0f, 0);
 	}
 	if (win == true) {
-		App->renderer->Blit(Win, xplayer-100, yplayer-100, NULL, 1.0f, 0);
+		App->renderer->Blit(Win, xplayer - 500, yplayer - 400, NULL, 1.0f, 0);
 	}
 	if (dead == false) {
 		App->renderer->Blit(MunecoKun, xplayer, yplayer, NULL, 1.0f, 0);
@@ -91,6 +91,17 @@ update_status ModulePlayer::Update()
 	SDL_Rect a = { x, y, 50, 50 };
 	App->renderer->Blit(CanonKun,x, y,NULL,1.0f, -rotacion);
 	Limite = false;
+	//INSTA WIN
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_UP) {
+		win = true;
+		
+	}
+	//INSTA LOSE
+
+	if (App->input->GetKey(SDL_SCANCODE_5) == KEY_UP) {
+		dead = true;
+		
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -98,7 +109,7 @@ void ModulePlayer::OnCollision(Collider* c1, Collider* c2)
 {
 
 	if (c1->type == Collider::Type::PLAYER && c2->type == Collider::Type::BOLA) {
-		vidas--;
+		dead = true;
 		
 		
 	}

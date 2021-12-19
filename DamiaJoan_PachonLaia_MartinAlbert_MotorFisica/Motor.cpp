@@ -15,10 +15,10 @@ Motor::Motor(Application* app, bool start_enabled) : Module(app, start_enabled)
 	for (uint i = 0; i < MAX_COLLIDERS; ++i)
 		colliders[i] = nullptr;
 
-	matrix[Collider::Type::BOLA][Collider::Type::BOLA] = true;
-	matrix[Collider::Type::GROUND][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::BOLA][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::BOLA] = true;
+	matrix[Collider::Type::GROUND][Collider::Type::BOLA] = true;
+	matrix[Collider::Type::BOLA][Collider::Type::GROUND] = true;
 	matrix[Collider::Type::LIMITE][Collider::Type::PLAYER] = true;
 	matrix[Collider::Type::PLAYER][Collider::Type::LIMITE] = true;
 	
@@ -239,7 +239,10 @@ update_status Motor::Update()
 
 			if (eforce == true)
 			{
-				//elastic_function(c->data, dt, anchor, float b);
+				while (gr != NULL) {
+					elastic_function(c->data, dt, gr->data, b);
+					gr = gr->next;
+				}
 			}
 			// Add impulsive force
 			if (iforce == true)
@@ -291,10 +294,7 @@ update_status Motor::Update()
 
 	}
 	//elastic force (springs)
-	while (gr != NULL) {
-		elastic_function(c->data, dt, gr->data, b);
-		gr = gr->next;
-	}
+	
 
 	music = false;
 
@@ -370,8 +370,8 @@ bool Motor::impulsive_function(Ball* ball, float dt, int rot)
 {
 	rot = App->player->rotacion;
 	
-	ball->fy -= 20000;
-	ball->fx += 20000 * cos(rot);
+	ball->vy += 500*sin(rot);
+	ball->vx += 500 * cos(rot);
 
 	return true;
 }
