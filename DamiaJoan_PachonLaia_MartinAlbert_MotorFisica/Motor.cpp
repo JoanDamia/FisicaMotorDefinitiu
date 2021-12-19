@@ -6,6 +6,8 @@
 #include"Collider.h"
 #include"ModuleRender.h"
 #include"ModuleAudio.h"
+#include"ModulePlayer.h"
+
 
 Motor::Motor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -244,7 +246,7 @@ update_status Motor::Update()
 			{
 				if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
 				{
-					impulsive_function(c->data, dt);
+					impulsive_function(c->data, dt, rot);
 				}
 			}
 
@@ -315,7 +317,7 @@ update_status Motor::PostUpdate()
 	}
 
 	// Draw ground
-	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
+	SDL_Rect a = { grounde.x, grounde.y+450, 1200, 10 };
 	App->renderer->DrawQuad(a, 0, 255, 255);
 	
 	return UPDATE_CONTINUE;
@@ -358,10 +360,12 @@ bool  Motor::drag_function(Ball* ball, float dt)
 }
 
 
-bool Motor::impulsive_function(Ball* ball, float dt)
+bool Motor::impulsive_function(Ball* ball, float dt, int rot)
 {
-	ball->fy -= 12000;
-	ball->fx += 12000;
+	rot = App->player->rotacion;
+	
+	ball->fy -= 20000;
+	ball->fx += 20000 * cos(rot);
 
 	return true;
 }

@@ -80,6 +80,14 @@ update_status ModulePlayer::Update()
 	if ((App->input->GetKey(SDL_SCANCODE_DOWN)) == (KEY_REPEAT)) {
 		rotacion -= 1;
 	}
+	if (rotacion > 90)
+	{
+		rotacion = 90;
+	}
+	if (rotacion < 0)
+	{
+		rotacion = 0;
+	}
 	SDL_Rect a = { x, y, 50, 50 };
 	App->renderer->Blit(CanonKun,x, y,NULL,1.0f, -rotacion);
 	Limite = false;

@@ -11,7 +11,7 @@ class Ground {
 public:
 	double ground;
 	int x=0;
-	int y=500;
+	int y=50;
 };
 class Ball
 {
@@ -32,8 +32,8 @@ public:
 	double ay;
 
 	// Force (total) applied to the ball
-	double fx;
-	double fy;
+	float fx;
+	float fy;
 
 	// Mass
 	double mass= 100;
@@ -53,6 +53,7 @@ public:
 	double fdy; // Let's assume Lift is perpendicular with x-axis (in your game, generalize this)
 	double fiy;
 	double fix;
+	
 
 	// Has physics enabled?
 	bool physics_enabled = true;
@@ -73,6 +74,7 @@ public:
 		this->fdy = 0;
 		this->fiy = 0;
 		this->fix = 0;
+		
 	}
 
 	Ball(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy) {
@@ -91,6 +93,7 @@ public:
 		this->fdy = fdy;
 		this->fiy = fiy;
 		this->fix = fix;
+		
 	}
 	 ~Ball() {
 
@@ -115,11 +118,12 @@ public:
 	bool integrator_velocity_verlet(Ball* ball, float dt);
 	bool integrator_velocity_euler(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
-	bool impulsive_function(Ball* ball, float dt);
+	bool impulsive_function(Ball* ball, float dt, int rot);
 	bool elastic_function(Ball* ball, float dt, Ground* anchor, float b);
 	//void newton_law(Ball* ball, float dt);
 	void ComputeForces(Ball* ball, float dt);
 public:
+	int rot = 0;
 	float dt =0.016;
 	float g = 200.0f;
 	bool enabled = true;
