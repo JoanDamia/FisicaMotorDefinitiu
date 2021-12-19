@@ -3,7 +3,9 @@
 #include "Animation.h"
 #include "Globals.h"
 #include "p2Point.h"
+#include "Collider.h"
 
+#define MAX_COLLIDERS 1000
 
 class Ground {
 public:
@@ -18,8 +20,8 @@ public:
 	
 	// Position
 	// You could also use an array/vector
-	float x = 0.0;
-	float y = 0.0;
+	int x = 0;
+	int y = 0;
 
 	// Velocity
 	double vx=0;
@@ -106,6 +108,7 @@ public:
 
 	bool Start();
 	update_status Update();
+	update_status PreUpdate();
 	update_status PostUpdate();
 	Ball* AddBall(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy);
 	bool CleanUp();
@@ -126,5 +129,11 @@ public:
 	bool dforce = true;
 	bool iforce = true;
 	bool eforce = true;
-
+	bool matrix[Collider::Type::MAX][Collider::Type::MAX];
+	Collider* colliders[MAX_COLLIDERS] = { nullptr };
+	Collider* AddCollider(SDL_Rect rect, Collider::Type type, Module* listener = nullptr);
+	void DebugDraw();
+	uint corazonFx = 0;
+	bool music = false;
+	bool debug = false;
 };

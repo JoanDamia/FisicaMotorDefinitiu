@@ -3,10 +3,23 @@
 #include "Motor.h"
 #include "math.h"
 #include"ModuleInput.h"
+#include"Collider.h"
+#include"ModuleRender.h"
+#include"ModuleAudio.h"
 
 Motor::Motor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	//collisions
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+		colliders[i] = nullptr;
 
+	matrix[Collider::Type::BOLA][Collider::Type::BOLA] = true;
+	matrix[Collider::Type::GROUND][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::BOLA][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::BOLA] = true;
+	matrix[Collider::Type::LIMITE][Collider::Type::PLAYER] = true;
+	matrix[Collider::Type::PLAYER][Collider::Type::LIMITE] = true;
+	
 }
 Motor::~Motor()
 {}
@@ -22,7 +35,7 @@ bool Motor::Start()
 	//ball.surface = 2; // m^2
 	//ball.cd = 0.4;
 	//ball.cl = 1.2;
-
+	corazonFx = App->audio->LoadFx("Assets/audio/fx/salto.wav");
 	// Set initial velocity of the ball
 
 	/*ball.vx = 5.0;
@@ -45,10 +58,88 @@ Ball* Motor::AddBall(double mass, float x, float y, double vx, double vy, double
 	// Return ball (why?)
 	return thisball;
 }
+update_status Motor::PreUpdate() {
+	for (uint i = 0; i < MAX_COLLIDERS; i++) {
+		if (colliders[i] != nullptr && colliders[i]->pendingToDelete == true) {
+			delete colliders[i];
+			colliders[i] = nullptr;
+		}
+	}
 
+	Collider* c1;
+	Collider* c2;
+
+	for (uint i = 0; i < MAX_COLLIDERS; i++) {
+		if (colliders[i] == nullptr) {
+			continue;
+		}
+		c1 = colliders[i];
+		for (uint k = i + 1; k < MAX_COLLIDERS; ++k) {
+			if (colliders[k] == nullptr) {
+				continue;
+			}
+			c2 = colliders[k];
+
+			if (matrix[c1->type][c2->type] && c1->Intersects(c2->rect))
+			{
+				for (uint i = 0; i < MAX_LISTENERS; ++i)
+				{
+					if (c1->listeners[i] != nullptr)
+					{
+						c1->listeners[i]->OnCollision(c1, c2);
+
+					}
+
+				}
+				for (uint i = 0; i < MAX_LISTENERS; ++i)
+				{
+					if (c2->listeners[i] != nullptr) {
+						c2->listeners[i]->OnCollision(c2, c1);
+
+					}
+
+				}
+			}
+		}
+	}
+	return UPDATE_CONTINUE;
+}
 // Update: compute physics
 update_status Motor::Update()
 {
+	//========================================= DrawCollisions===================================================
+
+
+	Uint8 alpha = 80;
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr)
+			continue;
+
+		switch (colliders[i]->type)
+		{
+		case Collider::Type::NONE: // white
+			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 255);
+			break;
+		case Collider::Type::PLAYER: // green
+			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0);
+			break;
+		case Collider::Type::LIMITE: // green
+			App->renderer->DrawQuad(colliders[i]->rect, 34, 255, 234);
+			break;
+		case Collider::Type::BOLA: // green
+			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0);
+			break;
+		case Collider::Type::GROUND: // green
+			App->renderer->DrawQuad(colliders[i]->rect, 0, 255, 0);
+			break;
+
+
+		}
+	}
+	if (music == true) {
+		App->audio->PlayFx(corazonFx);
+	}
 	// Add new ball if user presses 1
 	if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
 	{
@@ -196,27 +287,41 @@ update_status Motor::Update()
 		c = c->next;
 	}
 
+
+	music = false;
+
 	// Continue playing
 	return UPDATE_CONTINUE;
 }
 
 update_status Motor::PostUpdate()
 {
+	//SHOW COLLIDERS
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN) {
+		if (debug != true) {
+			debug = false;
+		}
+		else {
+			debug = true;
+		}
+	}
 	// Draw all balls in the list
 	p2List_item<Ball*>* c = pelotas.getFirst();
 	while (c != NULL)
 	{
-		App->renderer->DrawCircle(c->data->x + 50, c->data->y, 20, 0, 255, 255);
+		App->renderer->DrawCircle(c->data->x + 50, c->data->y+450, 20, 0, 255, 255);
+		music = true;
 		c = c->next;
 	}
 
 	// Draw ground
 	SDL_Rect a = { grounde.x, grounde.y, 1200, 10 };
 	App->renderer->DrawQuad(a, 0, 255, 255);
-
+	
 	return UPDATE_CONTINUE;
 }
 
+//=========================== FUNCIONES DE FISICA =================================================================================
 
 // Integration scheme: Velocity Verlet
 bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
@@ -277,12 +382,41 @@ bool Motor::elastic_function(Ball* ball, float dt, Ground* anchor, float b)
 	//Fk = -k * DeltaX - b * deltaV
 	return true;
 }
+//==============================================================================================================================
 
+void Motor::DebugDraw()
+{
+	
+
+}
+
+Collider* Motor::AddCollider(SDL_Rect rect, Collider::Type type, Module* listener)
+{
+	Collider* ret = nullptr;
+
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] == nullptr)
+		{
+			ret = colliders[i] = new Collider(rect, type, listener);
+			break;
+		}
+	}
+
+	return ret;
+}
 
 // Unload assets
 bool Motor::CleanUp()
 {
 	LOG("Unloading player");
-
+	for (uint i = 0; i < MAX_COLLIDERS; ++i)
+	{
+		if (colliders[i] != nullptr)
+		{
+			delete colliders[i];
+			colliders[i] = nullptr;
+		}
+	}
 	return true;
 }
