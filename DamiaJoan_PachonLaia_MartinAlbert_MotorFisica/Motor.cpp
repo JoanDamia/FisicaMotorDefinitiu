@@ -62,6 +62,52 @@ update_status Motor::Update()
 		// Process this ball only if physics enabled
 		if (c->data->physics_enabled == true)
 		{
+
+
+			if (App->input->GetKey(SDL_SCANCODE_3) == (KEY_UP))
+			{
+				euler = false;
+				verlet = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_4) == (KEY_UP))
+			{
+				verlet = false;
+				euler = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F1) == (KEY_UP))
+			{
+				gforce = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F2) == (KEY_UP))
+			{
+				gforce = false;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F3) == (KEY_UP))
+			{
+				dforce = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F4) == (KEY_UP))
+			{
+				dforce = false;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F5) == (KEY_UP))
+			{
+				iforce = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F6) == (KEY_UP))
+			{
+				iforce = false;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F7) == (KEY_UP))
+			{
+				eforce = true;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_F8) == (KEY_UP))
+			{
+				eforce = false;
+			}
+
+
 			// Step #0: Reset total acceleration and total accumulated force of the ball (clear old values)
 			c->data->fx = c->data->fy = 0.0;
 			c->data->ax = c->data->ay = 0.0;
@@ -69,21 +115,46 @@ update_status Motor::Update()
 			// Step #1: Compute forces
 
 			// Compute Gravity force
-			c->data->fgx = c->data->mass * 0.0;
-			c->data->fgy = c->data->mass * g; // Let's assume gravity is constant and downwards
-
+			if (gforce == true)
+			{
+				c->data->fgx = c->data->mass * 0.0;
+				c->data->fgy = c->data->mass * g; // Let's assume gravity is constant and downwards
+			}
+			if (gforce == false)
+			{
+				c->data->fgx = 0.0;
+				c->data->fgy = 0.0;
+			}
 			// Add gravity force to the total accumulated force of the ball
 			c->data->fx += c->data->fgx;
 			c->data->fy += c->data->fgy;
 			//c->data->fy += c->data->fgy - c->data->fiy - c->data->fdy;
 
 			// Compute Aerodynamic Lift & Drag forces
-			drag_function(c->data, dt);
+
+			if (dforce == true)
+			{
+				drag_function(c->data, dt);
+			}
+			if (dforce == false)
+			{
+				c->data->fdx = 0.0;
+				c->data->fdy = 0.0;
+			}
 
 			// Add impulsive force
-			if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
+
+			if (eforce == true)
 			{
-				impulsive_function(c->data, dt);
+				//elastic_function(c->data, dt, anchor, float b);
+			}
+			// Add impulsive force
+			if (iforce == true)
+			{
+				if (App->input->GetKey(SDL_SCANCODE_1) == (KEY_UP))
+				{
+					impulsive_function(c->data, dt);
+				}
 			}
 
 			// Step #2: 2nd Newton's Law: SUM_Forces = mass * accel --> accel = SUM_Forces / mass
@@ -92,7 +163,16 @@ update_status Motor::Update()
 
 			// Step #3: Integrate --> from accel to new velocity & new position. 
 			// We will use the 2nd order "Velocity Verlet" method for integration.
-			integrator_velocity_verlet(c->data, dt);
+
+			if (verlet == true)
+			{
+				integrator_velocity_verlet(c->data, dt);
+			}
+			if (euler == true)
+			{
+				integrator_velocity_euler(c->data, dt);
+			}
+
 
 			// Step #4: solve collisions
 
@@ -151,16 +231,27 @@ bool  Motor::integrator_velocity_verlet(Ball* ball, float dt)
 	return true;
 }
 
+bool  Motor::integrator_velocity_euler(Ball* ball, float dt)
+{
+	ball->x += ball->x + ball->vx * dt;
+	ball->vx += ball->vx + ball->ax * dt;
+
+	ball->y += ball->y + ball->vy * dt;
+	ball->vy += ball->vy + ball->ay * dt;
+
+	return true;
+}
 
 bool  Motor::drag_function(Ball* ball, float dt)
 {
 	float cd = 0.12;
 
-	ball->fdx = 0.5 * (ball->vx * 0.3) * cd;
-	ball->fdy = 0.5 * (ball->vy * 0.3) * cd;
+	ball->fdx = 0.5 * (0.3 * 0.3) * cd;
+	ball->fdy = 0.5 * (0.3 * 0.3) * cd;
 
 	return true;
 }
+
 
 bool Motor::impulsive_function(Ball* ball, float dt)
 {

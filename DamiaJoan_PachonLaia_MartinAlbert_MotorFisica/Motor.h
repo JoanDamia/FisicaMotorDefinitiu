@@ -110,6 +110,7 @@ public:
 	Ball* AddBall(double mass, float x, float y, double vx, double vy, double fy, double fx, double ax, double ay, double fgx, double fgy);
 	bool CleanUp();
 	bool integrator_velocity_verlet(Ball* ball, float dt);
+	bool integrator_velocity_euler(Ball* ball, float dt);
 	bool drag_function(Ball* ball, float dt);
 	bool impulsive_function(Ball* ball, float dt);
 	bool elastic_function(Ball* ball, float dt, Ground* anchor, float b);
@@ -119,5 +120,11 @@ public:
 	float dt =0.016;
 	float g = 200.0f;
 	bool enabled = true;
-	
+	bool verlet = true;
+	bool euler = false;
+	bool gforce = true;
+	bool dforce = true;
+	bool iforce = true;
+	bool eforce = true;
+
 };
